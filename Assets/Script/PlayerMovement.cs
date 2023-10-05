@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     Animator anim;
     CharacterController controller;
     Vector3 velocity;
-    float gravity = -9.8f * 3;
+    float gravity = -9.8f * 2;
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundmask;
@@ -24,9 +24,9 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         float Horizontal = Input.GetAxis("Horizontal");
-            anim.SetFloat("speed", Horizontal);
+        anim.SetFloat("speed", Mathf.Abs(Horizontal));
 
-             isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundmask);
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundmask);
 
         if(isGrounded && velocity.y <0){
             velocity.y = -2f;
