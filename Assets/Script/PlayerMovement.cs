@@ -39,7 +39,15 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2 *gravity);
         }
 
+        if(transform.forward.z >0 && horizInput<0 || transform.forward.z <0 && horizInput>0){
+
+        }
+
         velocity.y += gravity *Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    void EndTurn(){
+        anim.SetBool("turning", false);
     }
 }
