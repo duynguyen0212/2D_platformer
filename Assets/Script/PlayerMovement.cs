@@ -17,13 +17,18 @@ public class PlayerMovement : MonoBehaviour
     public float jumpHeight;
     float t;
     public Camera cam;
-    private Rigidbody rb;
-    public bool hanging;
+    // private Rigidbody rb;
+    // public LayerMask ledgeLayer;
+    // public float ledgeCheckDistance = 0.5f;
+    // public float climbForce = 5f;
+
+    // public bool isHanging = false;
+    // private RaycastHit ledgeHit;
     void Start()
     {
         anim = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -52,6 +57,37 @@ public class PlayerMovement : MonoBehaviour
             anim.SetBool("jump", true);
         }
         
+        // if (!isHanging)
+        // {
+        //     if(Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out RaycastHit hitInfo, 20f)){
+        //         Debug.Log("hitsomthing");
+        //         Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward)*hitInfo.distance, Color.green);
+        //     }
+        //     // Check for ledge while jumping
+        //     if (Input.GetButtonDown("Jump"))
+        //     {
+        //         if (Physics.Raycast(transform.position, transform.forward, out ledgeHit, ledgeCheckDistance, ledgeLayer))
+        //         {
+        //             Debug.DrawRay(transform.position, transform.forward * ledgeCheckDistance, Color.green);
+        //             // Grab the ledge
+        //             isHanging = true;
+        //             rb.useGravity = false;
+        //             rb.velocity = Vector3.zero;
+        //             transform.position = ledgeHit.point;
+        //         }
+                
+        //     }
+        // }
+        // else
+        // {
+        //     // Climb onto the ledge
+        //     if (Input.GetButtonDown("Jump"))
+        //     {
+        //         rb.AddForce(Vector3.up * climbForce, ForceMode.Impulse);
+        //         isHanging = false;
+        //         rb.useGravity = true;
+        //     }
+        // }
 
         if(transform.forward.z >0 && horizInput<0 || transform.forward.z <0 && horizInput>0){
             transform.Rotate(new Vector3(0,180,0));
@@ -65,47 +101,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("jump", false);
     }
 
-    void Climbing(){
-
-        if(!hanging){
-            RaycastHit downHit;
-            Vector3 lineDownStart = (transform.position +Vector3.up*1.5f)+transform.forward;
-            Vector3 lineDownEnd = (transform.position +Vector3.up*0.7f)+transform.forward;
-            Physics.Linecast(lineDownStart,lineDownEnd, out downHit, LayerMask.GetMask("Ledge"));
-            //Foward Cast
-            if (downHit.collider != null)
-            {
-                RaycastHit fwdHit;
-                Vector3 lineFwdStart = new Vector3(transform.position.x,downHit.point.y -0.1f, transform.position.z);
-                Vector3 lineFwdEnd = new Vector3(transform.position.x,downHit.point.y -0.1f, transform.position.z) +transform.forward;
-                Physics.Linecast(lineFwdStart,lineFwdEnd, out fwdHit, LayerMask.GetMask("Ledge"));
-
-                Debug.DrawLine(lineFwdStart, lineFwdEnd, Color.red);
-
-                if (fwdHit.collider != null)
-                {
-                    rb.useGravity = false;
-                    rb.velocity = Vector3.zero;
-
-                    hanging = true;
-
-                    //Hang animation
-
-                    Vector3 hangingPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
-                    Vector3 offset = transform.forward * -0.1f + transform.up * -1f;
-
-                    hangingPos += offset;
-                    transform.position = hangingPos;
-
-                    transform.forward = -fwdHit.normal;
-
-
-                }
-            }
-        }
-
-
-    }
+   
 
 
 
