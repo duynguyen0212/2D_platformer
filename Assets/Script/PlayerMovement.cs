@@ -16,10 +16,13 @@ public class PlayerMovement : MonoBehaviour
     public float jumpHeight;
     float t;
     public Camera cam;
+    private Rigidbody rb;
+    bool hanging;
     void Start()
     {
         anim = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -60,6 +63,50 @@ public class PlayerMovement : MonoBehaviour
     void EndJump(){
         anim.SetBool("jump", false);
     }
+
+    void Climbing(){
+
+        if(rb.velocity.y<0 && !hanging){
+            RaycastHit downHit;
+            Vector3 lineDownStart = (transform.position +Vector3.up*1.5f)+transform.forward;
+            Vector3 lineDownEnd = (transform.position +Vector3.up*0.7f)+transform.forward;
+            Physics.Linecast(lineDownStart,lineDownEnd, out downHit, LayerMask.GetMask("Ledge"));
+            //Foward Cast
+            if (downHit.collider != null)
+            {
+                RaycastHit fwdHit;
+                Vector3 lineFwdStart = new Vector3(transform.position.x,downHit.point.y -0.1f, transform.position.z);
+                Vector3 lineFwdEnd = new Vector3(transform.position.x,downHit.point.y -0.1f, transform.position.z) +transform.forward;
+                Physics.Linecast(lineFwdStart,lineFwdEnd, out fwdHit, LayerMask.GetMask("Ledge"));
+
+                Debug.DrawLine(lineFwdStart, lineFwdEnd, Color.red);
+
+                if (fwdHit.collider != null)
+                {
+                    rb.useGravity = false;
+                    rb.velocity = Vector3.zero;
+
+                    hanging = true;
+
+                    //Hang animation
+
+                    Vector3 hangingPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
+                    Vector3 offset = transform.forward * -0.1f + transform.up * -1f;
+
+                    hangingPos += offset;
+                    transform.position = hangingPos;
+
+                    transform.forward = -fwdHit.normal;
+
+
+                }
+            }
+        }
+
+
+    }
+
+
 
     
     
