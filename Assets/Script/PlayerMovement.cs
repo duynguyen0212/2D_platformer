@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -17,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     float t;
     public Camera cam;
     private Rigidbody rb;
-    bool hanging;
+    public bool hanging;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -66,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Climbing(){
 
-        if(rb.velocity.y<0 && !hanging){
+        if(!hanging){
             RaycastHit downHit;
             Vector3 lineDownStart = (transform.position +Vector3.up*1.5f)+transform.forward;
             Vector3 lineDownEnd = (transform.position +Vector3.up*0.7f)+transform.forward;
