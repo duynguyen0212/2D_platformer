@@ -2,50 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//LICENSE, YOU ARE LEGALLY REQUIRED TO LIKE THE VIDEO IF YOU COPY THIS CODE :) (i promise its legally binding, 50 years prison minimum)
 public class Climbing : MonoBehaviour
 {
-    public LayerMask ledgeLayer;
-    public float ledgeCheckDistance = 1f;
-    public float climbForce = 5f;
+    // Start is called before the first frame update
+    public LayerMask vaultLayer;
+    public Transform raycast;
+    private float playerHeight = 2f;
+    private float playerRadius = 0.5f;
 
-    public bool isHanging = false;
-    private RaycastHit ledgeHit;
-    private Rigidbody rb;
-
-    private void Start()
+    // Update is called once per frame
+    void Update()
     {
-        rb = GetComponent<Rigidbody>();
+        Vault();
     }
-
-    private void Update()
+    private void Vault()
     {
-        if (!isHanging)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-                
-            // Check for ledge while jumping
-            if (Input.GetButtonDown("Jump"))
+            if (Physics.Raycast(transform.position, transform.forward, out var firstHit, 1f, vaultLayer))
             {
-                if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out ledgeHit, ledgeCheckDistance, ledgeLayer))
+                print("vaultable in front");
+                if (Physics.Raycast(firstHit.point + (transform.forward * playerRadius) + (Vector3.up * 0.6f * playerHeight), Vector3.down, out var secondHit, playerHeight))
                 {
-                    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * ledgeCheckDistance, Color.green);
-                    // Grab the ledge
-                    isHanging = true;
-                    rb.useGravity = false;
-                    rb.velocity = Vector3.zero;
-                    transform.position = ledgeHit.point;
+                    print("found place to land");
+                    StartCoroutine(LerpVault(secondHit.point, 0.5f));
                 }
-                
             }
         }
-        else
+
+    }
+    IEnumerator LerpVault(Vector3 targetPosition, float duration)
+    {
+        float time = 0;
+        Vector3 startPosition = transform.position;
+
+        while (time < duration)
         {
-            // Climb onto the ledge
-            if (Input.GetButtonDown("Jump"))
-            {
-                rb.AddForce(Vector3.up * climbForce, ForceMode.Impulse);
-                isHanging = false;
-                rb.useGravity = true;
-            }
+            transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
+            time += Time.deltaTime;
+            yield return null;
         }
+        transform.position = targetPosition;
     }
 }
