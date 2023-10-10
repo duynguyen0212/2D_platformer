@@ -32,6 +32,8 @@ public class PlayerMovement1 : MonoBehaviour
     public Transform raycastClimb;
     public LayerMask ledgeLayer;
     bool canMove;
+    public float delayTime;
+    Vector3 point;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -60,15 +62,17 @@ public class PlayerMovement1 : MonoBehaviour
     }
 
     void LedgeDetection(){
+        
         if (!isHanging)
         {
             // Check for ledge while jumping
-        
+            
             if (Physics.Raycast(raycastClimb.transform.position, raycastClimb.transform.forward, out RaycastHit ledgeHit, 1f, ledgeLayer))
             {
                 // Grab the ledge
-                if (Physics.Raycast(ledgeHit.point + (transform.forward * .5f) + (Vector3.up * 0.6f * playerHeight), Vector3.down, out var targetPos, playerHeight))
-                StartCoroutine(LedgeVaultCo(ledgeHit, targetPos.point));
+                if (Physics.Raycast(ledgeHit.point + (transform.forward * .2f) + (Vector3.up * 0.6f * playerHeight), Vector3.down, out var targetPos, playerHeight))
+                point = targetPos.point;
+                StartCoroutine(LedgeVaultCo(ledgeHit));
             }
                 
         }
@@ -78,35 +82,42 @@ public class PlayerMovement1 : MonoBehaviour
                 canMove = true;
                 isHanging = false;
                 rb.useGravity = true;
-                anim.SetBool("climb", true);
+                anim.SetBool("ledge", false);
+                anim.SetBool("jump", true);
+                rb.AddForce(transform.up * 20f, ForceMode.Impulse);
+                //StartCoroutine(ClimbingCo(point));
             }
         }
     }
+    IEnumerator ClimbingCo(Vector3 p){
+        yield return new WaitForSeconds(delayTime);
+        rb.useGravity = true;
+        transform.position = p;
+        
+    }
 
-    IEnumerator LedgeVaultCo(RaycastHit ledgeHit, Vector3 targetPos){
+    IEnumerator LedgeVaultCo(RaycastHit ledgeHit){
         isHanging = true;
         anim.SetBool("ledge", true);
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
-        Vector3 offSet = transform.forward *-0.1f + transform.up*-2.3f;
+        Vector3 offSet = transform.forward *-0.1f + transform.up*-2.25f;
         transform.position = ledgeHit.point + offSet;
         canMove = false;
-        yield return new WaitForSeconds(.1f);
-        anim.SetTrigger("climb");
-        anim.SetBool("ledge", false);
-        yield return new WaitForSeconds(.1f);
-        rb.useGravity = true;
-        isHanging = false;
-        float time = 0;
-        Vector3 startPosition = transform.position;
-        while (time < .5f)
-        {
-            transform.position = Vector3.Lerp(startPosition, targetPos, time / .5f);
-            time += Time.deltaTime;
-            yield return null;
-        }
-        transform.position = targetPos;
-        canMove = true;
+        yield return new WaitForSeconds(.3f);
+        
+        // rb.useGravity = true;
+        // isHanging = false;
+        // float time = 0;
+        // Vector3 startPosition = transform.position;
+        // while (time < 1f)
+        // {
+        //     transform.position = Vector3.Lerp(startPosition, targetPos, time / 1f);
+        //     time += Time.deltaTime;
+        //     yield return null;
+        // }
+        // transform.position = targetPos;
+        // canMove = true;
 
     }
 
