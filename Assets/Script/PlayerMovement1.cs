@@ -54,6 +54,9 @@ public class PlayerMovement1 : MonoBehaviour
         
         MyInput();
         LedgeDetection();
+        if(rb.velocity.y >0.1f){
+            Debug.Log("falling");
+        }
         
         if (isGrounded && rb.velocity.y<0){
                anim.SetBool("jump", false);
@@ -87,9 +90,9 @@ public class PlayerMovement1 : MonoBehaviour
     }
     IEnumerator ClimbingCo(){
         yield return new WaitForSeconds(delayTime);
+        transform.position = point;
         anim.SetBool("finishClimb", true);
         rb.useGravity = true;
-        transform.position = point;
         canMove = true;
     }
 
