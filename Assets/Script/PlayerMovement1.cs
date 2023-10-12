@@ -66,11 +66,11 @@ public class PlayerMovement1 : MonoBehaviour
         if (!isHanging)
         {
             // Check for ledge while jumping
-            
+            anim.SetBool("finishClimb", false);
             if (Physics.Raycast(raycastClimb.transform.position, raycastClimb.transform.forward, out RaycastHit ledgeHit, 1f, ledgeLayer))
             {
                 // Grab the ledge
-                if (Physics.Raycast(ledgeHit.point + (transform.forward * .2f) + (Vector3.up * 0.6f * playerHeight), Vector3.down, out var targetPos, playerHeight))
+                if (Physics.Raycast(ledgeHit.point + (transform.forward * .1f) + (Vector3.up * 0.6f * playerHeight), Vector3.down, out var targetPos, playerHeight))
                 point = targetPos.point;
                 StartCoroutine(LedgeVaultCo(ledgeHit));
             }
@@ -79,21 +79,18 @@ public class PlayerMovement1 : MonoBehaviour
 
         if(isHanging){
             if(Input.GetButtonDown("Jump")){
-                canMove = true;
                 isHanging = false;
-                rb.useGravity = true;
                 anim.SetBool("ledge", false);
-                anim.SetBool("jump", true);
-                rb.AddForce(transform.up * 20f, ForceMode.Impulse);
-                //StartCoroutine(ClimbingCo(point));
+                StartCoroutine(ClimbingCo());
             }
         }
     }
-    IEnumerator ClimbingCo(Vector3 p){
+    IEnumerator ClimbingCo(){
         yield return new WaitForSeconds(delayTime);
+        anim.SetBool("finishClimb", true);
         rb.useGravity = true;
-        transform.position = p;
-        
+        transform.position = point;
+        canMove = true;
     }
 
     IEnumerator LedgeVaultCo(RaycastHit ledgeHit){
@@ -120,7 +117,13 @@ public class PlayerMovement1 : MonoBehaviour
         // canMove = true;
 
     }
-
+    // void FinishClimbing(){
+    //     Debug.Log("finish clib");
+    //     anim.SetBool("finishClimb", true);
+    //     rb.useGravity = true;
+    //     transform.position = point;
+    //     canMove = true;
+    // }
     private void MyInput()
     {
         horizontalInput = Input.GetAxis("Horizontal");
