@@ -53,14 +53,9 @@ public class PlayerMovement1 : MonoBehaviour
         else isGrounded = false;
         
         MyInput();
-        LedgeDetection();
-        if(rb.velocity.y >0.1f){
-            Debug.Log("falling");
-        }
-        
+        LedgeDetection();        
         if (isGrounded && rb.velocity.y<0){
                anim.SetBool("jump", false);
-            
         }
     }
 
@@ -92,6 +87,7 @@ public class PlayerMovement1 : MonoBehaviour
         yield return new WaitForSeconds(delayTime);
         transform.position = point;
         anim.SetBool("finishClimb", true);
+
         rb.useGravity = true;
         canMove = true;
     }
@@ -105,28 +101,9 @@ public class PlayerMovement1 : MonoBehaviour
         transform.position = ledgeHit.point + offSet;
         canMove = false;
         yield return new WaitForSeconds(.3f);
-        
-        // rb.useGravity = true;
-        // isHanging = false;
-        // float time = 0;
-        // Vector3 startPosition = transform.position;
-        // while (time < 1f)
-        // {
-        //     transform.position = Vector3.Lerp(startPosition, targetPos, time / 1f);
-        //     time += Time.deltaTime;
-        //     yield return null;
-        // }
-        // transform.position = targetPos;
-        // canMove = true;
 
     }
-    // void FinishClimbing(){
-    //     Debug.Log("finish clib");
-    //     anim.SetBool("finishClimb", true);
-    //     rb.useGravity = true;
-    //     transform.position = point;
-    //     canMove = true;
-    // }
+ 
     private void MyInput()
     {
         horizontalInput = Input.GetAxis("Horizontal");
