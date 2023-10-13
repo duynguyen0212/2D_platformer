@@ -18,7 +18,9 @@ public class Enemy : MonoBehaviour
     private float nextAttackTime;
     private bool isCoolingDown => Time.time < nextAttackTime;    
     private void StartCoolDown(float cooldownTime) => nextAttackTime = Time.time + cooldownTime;
-
+    public Rigidbody rb;
+    public float knockbackForce = 10f;
+    public Vector3 knockbackDirection = new Vector3(0, 1, 1); // Adjust the direction as needed
     void Start()
     {
         currentHealth = maxHealth;
@@ -45,6 +47,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void KnockedBack(){
+        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode.Impulse);
+    }
     void ChasePlayer()
     {
         // Set the player's position as the destination for chasing.

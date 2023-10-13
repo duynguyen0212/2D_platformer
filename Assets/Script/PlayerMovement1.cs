@@ -21,7 +21,7 @@ public class PlayerMovement1 : MonoBehaviour
     public Transform groundCheck;
     public float groundCheckRadius = 0.4f;
     public Transform orientation;
-
+    public float attackRange;
     float horizontalInput;
     Animator anim;
     Rigidbody rb;
@@ -30,10 +30,12 @@ public class PlayerMovement1 : MonoBehaviour
     Collider[] groundCollisions;
     public bool isHanging = false;
     public Transform raycastClimb;
+    public Transform raycastAttack;
     public LayerMask ledgeLayer;
     bool canMove;
     public float delayTime;
     Vector3 point;
+    public bool attacking;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -41,6 +43,7 @@ public class PlayerMovement1 : MonoBehaviour
         anim = GetComponent<Animator>();
         canMove = true;
         facingRight = true;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
@@ -57,6 +60,27 @@ public class PlayerMovement1 : MonoBehaviour
         if (isGrounded && rb.velocity.y<0){
                anim.SetBool("jump", false);
         }
+        if (Input.GetMouseButtonDown(0) && !attacking)
+        {
+            StartCoroutine(AttackCo());
+        }
+    }
+
+    IEnumerator AttackCo(){
+        attacking = true;
+        anim.SetBool("attack", true);
+        if(Physics.Raycast(raycastAttack.transform.position, raycastAttack.transform.forward, out RaycastHit hit, attackRange)){
+                Enemy enemy = hit.transform.GetComponent<Enemy>();
+                if(hit.collider.CompareTag("Enemy")){
+                    enemy.TakeDamage(50);
+                    enemy.KnockedBack();
+                }
+        }
+        yield return new WaitForSeconds(.26f);
+        anim.SetBool("attack", false);
+        yield return new WaitForSeconds(.3f);
+        attacking = false;
+
     }
 
     void LedgeDetection(){
@@ -143,5 +167,21 @@ public class PlayerMovement1 : MonoBehaviour
     }
     void EndJump(){
         anim.SetBool("jump", false);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        
+        // Check if the collision is with the target object
+        if (Input.GetMouseButtonDown(0) && other.CompareTag("Enemy"))
+        {
+            Enemy enemy = other.GetComponent<Enemy>();
+            enemy.TakeDamage(50);
+        }
+        PauseMenu obj = GetComponent<PauseMenu>();
+        if(other.gameObject.tag== "Finish"){
+            obj.winMenu.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 }
