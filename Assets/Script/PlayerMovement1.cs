@@ -45,8 +45,8 @@ public class PlayerMovement1 : MonoBehaviour
         facingRight = true;
         Cursor.lockState = CursorLockMode.Locked;
     }
-
-    private void Update()
+    
+    private void FixedUpdate()
     {
         // ground check
         groundCollisions = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundmask);
