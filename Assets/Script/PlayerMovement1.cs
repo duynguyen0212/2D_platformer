@@ -46,29 +46,29 @@ public class PlayerMovement1 : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
     
-    private void FixedUpdate()
-    {
+    private void Update(){
         // ground check
         groundCollisions = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundmask);
         if(groundCollisions.Length >0){
             isGrounded = true;
         }
         else isGrounded = false;
-        
         MyInput();
         LedgeDetection();        
-        if (isGrounded && rb.velocity.y<0){
-               anim.SetBool("jump", false);
-        }
         if (Input.GetMouseButtonDown(0) && !attacking)
         {
             StartCoroutine(AttackCo());
         }
+        if (isGrounded && rb.velocity.y<0){
+               anim.SetBool("jump", false);
+        }
+
     }
 
     IEnumerator AttackCo(){
         attacking = true;
         anim.SetBool("attack", true);
+        yield return new WaitForSeconds(.26f);
         if(Physics.Raycast(raycastAttack.transform.position, raycastAttack.transform.forward, out RaycastHit hit, attackRange)){
                 Enemy enemy = hit.transform.GetComponent<Enemy>();
                 if(hit.collider.CompareTag("Enemy")){
@@ -76,7 +76,6 @@ public class PlayerMovement1 : MonoBehaviour
                     enemy.KnockedBack();
                 }
         }
-        yield return new WaitForSeconds(.26f);
         anim.SetBool("attack", false);
         yield return new WaitForSeconds(.3f);
         attacking = false;
@@ -142,8 +141,6 @@ public class PlayerMovement1 : MonoBehaviour
             isGrounded = false;
             anim.SetBool("jump", true);
             rb.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
-            
-            
         }
 
         if(horizontalInput > 0 && !facingRight || horizontalInput <0 && facingRight)
