@@ -21,15 +21,15 @@ public class Enemy : MonoBehaviour
     public Rigidbody rb;
     public float knockbackForce = 10f;
     public PlayerMovement1 playerReference;
-    public BoxCollider collider;
+    public BoxCollider Enemycollider;
     public Vector3 knockbackDirection = new Vector3(0, 1, 1); // Adjust the direction as needed
     void Start()
     {
         currentHealth = maxHealth;
         player = GameObject.FindGameObjectWithTag("Player").transform;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        collider = GetComponentInChildren<BoxCollider>();
-        collider.enabled = false;
+        Enemycollider = GetComponentInChildren<BoxCollider>();
+        Enemycollider.enabled = false;
     }
 
     void Update()
@@ -83,12 +83,13 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator AttackCo(){
         attackAni = true;
-        collider.enabled = true;
         enemyAni.SetBool("Walking", false);
         enemyAni.SetBool("Attacking", true);
-        yield return new WaitForSeconds(1.1f);
+        yield return new WaitForSeconds(.55f);
+        Enemycollider.enabled = true;
+        yield return new WaitForSeconds(.9f);
         enemyAni.SetBool("Attacking", false);
-        collider.enabled = false;
+        Enemycollider.enabled = false;
         attackAni = false;
     }
 

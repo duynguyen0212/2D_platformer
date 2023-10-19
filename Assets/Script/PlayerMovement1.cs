@@ -193,7 +193,21 @@ public class PlayerMovement1 : MonoBehaviour
     }
 
     public void TakeDamage(){
+        Vector3 knockbackDirection;
         anim.SetTrigger("death");
+        if(facingRight){
+            knockbackDirection = new Vector3(0,0,-1);
+        } else knockbackDirection = new Vector3(0,0,1);
+        rb.AddForce(knockbackDirection.normalized * 10f, ForceMode.Impulse);
         isDead = true;
+        StartCoroutine(GameOverCo());
+    }
+
+    IEnumerator GameOverCo(){
+        yield return new WaitForSeconds(3f);
+        PauseMenu obj = GetComponent<PauseMenu>();
+        obj.overMenu.SetActive(true);
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
     }
 }

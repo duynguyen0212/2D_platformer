@@ -723,7 +723,7 @@ MonoBehaviour:
   rb: {fileID: 269990317}
   knockbackForce: 10
   playerReference: {fileID: 830541716}
-  collider: {fileID: 0}
+  Enemycollider: {fileID: 0}
   knockbackDirection: {x: 0, y: 1, z: 1}
 --- !u!95 &269990315 stripped
 Animator:
@@ -2933,7 +2933,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 830541718}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: PauseGame
+        m_MethodName: ResumeGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4616,7 +4616,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1432951499188351216, guid: f99bbd0754201f448b27f0c455b92b76, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -63.62
+      value: -63.799
       objectReference: {fileID: 0}
     - target: {fileID: 1432951499188351216, guid: f99bbd0754201f448b27f0c455b92b76, type: 3}
       propertyPath: m_LocalRotation.w
