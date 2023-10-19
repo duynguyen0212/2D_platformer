@@ -59,6 +59,11 @@ public class PlayerMovement1 : MonoBehaviour
         {
             StartCoroutine(AttackCo());
         }
+        else if(Input.GetMouseButtonDown(0) && !attacking && anim.GetBool("walk")==true){
+            
+            StartCoroutine(AttackCo());
+            
+        }
         if (isGrounded && rb.velocity.y<0){
                anim.SetBool("jump", false);
         }
@@ -66,6 +71,7 @@ public class PlayerMovement1 : MonoBehaviour
     }
 
     IEnumerator AttackCo(){
+        rb.velocity = Vector3.zero;
         attacking = true;
         anim.SetBool("attack", true);
         yield return new WaitForSeconds(.26f);
@@ -79,6 +85,7 @@ public class PlayerMovement1 : MonoBehaviour
         anim.SetBool("attack", false);
         yield return new WaitForSeconds(.3f);
         attacking = false;
+        canMove = true;
 
     }
 
@@ -178,7 +185,12 @@ public class PlayerMovement1 : MonoBehaviour
         PauseMenu obj = GetComponent<PauseMenu>();
         if(other.gameObject.tag== "Finish"){
             obj.winMenu.SetActive(true);
+            Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.None;
         }
+    }
+
+    public void TakeDamage(){
+        Debug.Log("ouch!");
     }
 }

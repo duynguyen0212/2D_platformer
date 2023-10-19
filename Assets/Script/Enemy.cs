@@ -20,6 +20,7 @@ public class Enemy : MonoBehaviour
     private void StartCoolDown(float cooldownTime) => nextAttackTime = Time.time + cooldownTime;
     public Rigidbody rb;
     public float knockbackForce = 10f;
+    public PlayerMovement1 playerReference;
     public Vector3 knockbackDirection = new Vector3(0, 1, 1); // Adjust the direction as needed
     void Start()
     {
@@ -65,6 +66,17 @@ public class Enemy : MonoBehaviour
         transform.LookAt(player);
         StartCoroutine(AttackCo());
         StartCoolDown(1f);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        
+        // Check if the collision is with the target object
+        if (other.CompareTag("Player") && attackAni == true)
+        {
+            Debug.Log("zombie attack!");
+            playerReference.TakeDamage();
+        }
+        
     }
 
     private IEnumerator AttackCo(){
