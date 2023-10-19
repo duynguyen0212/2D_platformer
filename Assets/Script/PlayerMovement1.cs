@@ -36,8 +36,10 @@ public class PlayerMovement1 : MonoBehaviour
     public float delayTime;
     Vector3 point;
     public bool attacking;
+    public bool isDead;
     private void Start()
     {
+        isDead = false;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         anim = GetComponent<Animator>();
@@ -191,6 +193,7 @@ public class PlayerMovement1 : MonoBehaviour
     }
 
     public void TakeDamage(){
-        Debug.Log("ouch!");
+        anim.SetTrigger("death");
+        isDead = true;
     }
 }

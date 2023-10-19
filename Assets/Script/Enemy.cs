@@ -21,18 +21,21 @@ public class Enemy : MonoBehaviour
     public Rigidbody rb;
     public float knockbackForce = 10f;
     public PlayerMovement1 playerReference;
+    public BoxCollider collider;
     public Vector3 knockbackDirection = new Vector3(0, 1, 1); // Adjust the direction as needed
     void Start()
     {
         currentHealth = maxHealth;
         player = GameObject.FindGameObjectWithTag("Player").transform;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        collider = GetComponentInChildren<BoxCollider>();
+        collider.enabled = false;
     }
 
     void Update()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
+        if(playerReference.isDead) return;
         if (distanceToPlayer <= chaseRange && distanceToPlayer > attackRange && isTakingDmg == false)
         {
             ChasePlayer();
@@ -71,9 +74,8 @@ public class Enemy : MonoBehaviour
     {
         
         // Check if the collision is with the target object
-        if (other.CompareTag("Player") && attackAni == true)
+        if (other.CompareTag("Player"))
         {
-            Debug.Log("zombie attack!");
             playerReference.TakeDamage();
         }
         
@@ -81,10 +83,12 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator AttackCo(){
         attackAni = true;
+        collider.enabled = true;
         enemyAni.SetBool("Walking", false);
         enemyAni.SetBool("Attacking", true);
         yield return new WaitForSeconds(1.1f);
         enemyAni.SetBool("Attacking", false);
+        collider.enabled = false;
         attackAni = false;
     }
 
