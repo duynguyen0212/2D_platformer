@@ -37,6 +37,8 @@ public class PlayerMovement1 : MonoBehaviour
     Vector3 point;
     public bool attacking;
     public bool isDead;
+    public TMP_Text coinCounter;
+    private int coin;
     private void Start()
     {
         isDead = false;
@@ -45,6 +47,8 @@ public class PlayerMovement1 : MonoBehaviour
         anim = GetComponent<Animator>();
         canMove = true;
         facingRight = true;
+        coin = 0;
+        coinCounter.SetText(""+coin);
         Cursor.lockState = CursorLockMode.Locked;
     }
     
@@ -189,6 +193,18 @@ public class PlayerMovement1 : MonoBehaviour
             obj.winMenu.SetActive(true);
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.None;
+        }
+        if (other.CompareTag("Coins"))
+        {
+            Coin coinObj = other.GetComponent<Coin>();
+            coin += 1;
+            coinObj.Disappear();
+            coinCounter.SetText(""+coin);
+            
+        }
+        if (other.CompareTag("Spike"))
+        {
+            TakeDamage();
         }
     }
 
