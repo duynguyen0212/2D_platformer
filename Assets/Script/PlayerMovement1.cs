@@ -3,18 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 
 public class PlayerMovement1 : MonoBehaviour
 {
-    [Header("Movement")]
     public float jumpHeight;
-    [HideInInspector] public float walkSpeed;
-    [HideInInspector] public float sprintSpeed;
-
-    [Header("Keybinds")]
+    public float walkSpeed;
+    public float sprintSpeed;
     public KeyCode jumpKey = KeyCode.Space;
-
-    [Header("Ground Check")]
     public float playerHeight;
     public LayerMask groundmask;
     public bool isGrounded;
@@ -38,6 +34,8 @@ public class PlayerMovement1 : MonoBehaviour
     public bool attacking;
     public bool isDead;
     public TMP_Text coinCounter;
+    public Button jump;
+    
     private int coin;
     private void Start()
     {
@@ -49,7 +47,7 @@ public class PlayerMovement1 : MonoBehaviour
         facingRight = true;
         coin = 0;
         coinCounter.SetText(""+coin);
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
     
     private void Update(){
@@ -76,7 +74,11 @@ public class PlayerMovement1 : MonoBehaviour
 
     }
 
-    IEnumerator AttackCo(){
+
+    public void Attack(){
+        //jump.onClick.AddListener(Listener);
+    }
+    public IEnumerator AttackCo(){
         rb.velocity = Vector3.zero;
         attacking = true;
         anim.SetBool("attack", true);
@@ -168,12 +170,9 @@ public class PlayerMovement1 : MonoBehaviour
     }
   
 
-    private void Jump()
+    public void Jump()
     {
-        // reset y velocity
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        rb.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
-     
+        //jump.onClick.AddListener(Listener);
     }
     void EndJump(){
         anim.SetBool("jump", false);
@@ -210,11 +209,13 @@ public class PlayerMovement1 : MonoBehaviour
 
     public void TakeDamage(){
         Vector3 knockbackDirection;
+        rb.velocity = Vector3.zero;
+        canMove = false;
         anim.SetTrigger("death");
         if(facingRight){
             knockbackDirection = new Vector3(0,0,-1);
         } else knockbackDirection = new Vector3(0,0,1);
-        rb.AddForce(knockbackDirection.normalized * 10f, ForceMode.Impulse);
+        rb.AddForce(knockbackDirection.normalized * 5f, ForceMode.Impulse);
         isDead = true;
         StartCoroutine(GameOverCo());
     }

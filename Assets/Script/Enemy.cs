@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
     public float knockbackForce = 10f;
     public PlayerMovement1 playerReference;
     public BoxCollider Enemycollider;
-    public Vector3 knockbackDirection = new Vector3(0, 1, 1); // Adjust the direction as needed
+    public Vector3 knockbackDirection = new Vector3(0,0,-1); // Adjust the direction as needed
     void Start()
     {
         currentHealth = maxHealth;
@@ -49,9 +49,11 @@ public class Enemy : MonoBehaviour
             navMeshAgent.speed = 0;
             navMeshAgent.SetDestination(transform.position);
         }
+        
     }
 
     public void KnockedBack(){
+        rb.velocity = Vector3.zero;
         rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode.Impulse);
     }
     void ChasePlayer()
